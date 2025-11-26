@@ -50,7 +50,7 @@ void PrintStudent(int i) {
 }
 
 void SaveToFile() {
-    string filename = "students.csv";
+    string filename = "/Users/zrossiz/Desktop/hse/toi_sr/students.csv";
     int mode;
     cout << "Viberyte rezhim: 1 - Noviy fail, 2 - Dobavit v konec > ";
     cin >> mode;
