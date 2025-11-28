@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -8,63 +7,58 @@ using namespace std;
 const int MAX_STUDENTS = 100;
 
 struct Student {
-    unsigned int StudentNumber; 
-    string LastName;            
-    string FirstName;           
-    string MiddleName;          
-    unsigned int BirthYear;     
-    int Grade1;                 
-    int Grade2;                 
-    int Grade3;                 
+    unsigned int StudentNumber;
+    string LastName;
+    string FirstName;
+    string MiddleName;
+    unsigned int BirthYear;
+    int Grade1;
+    int Grade2;
+    int Grade3;
 };
 
-
-Student SdntArr[MAX_STUDENTS];     
-bool DeletedMask[MAX_STUDENTS];    
-int IndexByLastName[MAX_STUDENTS]; 
-int IndexByAverage[MAX_STUDENTS];  
-int SdntCount = 0;                 
-
+Student SdntArr[MAX_STUDENTS];
+bool DeletedMask[MAX_STUDENTS];
+int IndexByLastName[MAX_STUDENTS];
+int IndexByAverage[MAX_STUDENTS];
+int SdntCount = 0;
 
 double GetAverage(int index) {
     return (SdntArr[index].Grade1 + SdntArr[index].Grade2 + SdntArr[index].Grade3) / 3.0;
 }
 
 void InputStudent(int i) {
-    cout << "  Nomer zachetki: "; cin >> SdntArr[i].StudentNumber;
-    cout << "  Familiya:       "; cin >> SdntArr[i].LastName;
-    cout << "  Imya:           "; cin >> SdntArr[i].FirstName;
-    cout << "  Otchestvo:      "; cin >> SdntArr[i].MiddleName;
-    cout << "  God rozhdeniya: "; cin >> SdntArr[i].BirthYear;
-    cout << "  Ocenka 1:       "; cin >> SdntArr[i].Grade1;
-    cout << "  Ocenka 2:       "; cin >> SdntArr[i].Grade2;
-    cout << "  Ocenka 3:       "; cin >> SdntArr[i].Grade3;
+    cout << "Student number: "; cin >> SdntArr[i].StudentNumber;
+    cout << "Last name: "; cin >> SdntArr[i].LastName;
+    cout << "First name: "; cin >> SdntArr[i].FirstName;
+    cout << "Middle name: "; cin >> SdntArr[i].MiddleName;
+    cout << "Birth year: "; cin >> SdntArr[i].BirthYear;
+    cout << "Grade 1: "; cin >> SdntArr[i].Grade1;
+    cout << "Grade 2: "; cin >> SdntArr[i].Grade2;
+    cout << "Grade 3: "; cin >> SdntArr[i].Grade3;
 }
 
 void PrintStudent(int i) {
-    cout << "N" << SdntArr[i].StudentNumber << " "
+    cout << "ID " << SdntArr[i].StudentNumber << " | "
          << SdntArr[i].LastName << " " << SdntArr[i].FirstName << " " << SdntArr[i].MiddleName
-         << " | God: " << SdntArr[i].BirthYear
-         << " | Ocenki: " << SdntArr[i].Grade1 << "," << SdntArr[i].Grade2 << "," << SdntArr[i].Grade3
-         << " | Sr.ball: " << GetAverage(i) << endl;
+         << " |   Birth: " << SdntArr[i].BirthYear
+         << " |Grades: " << SdntArr[i].Grade1 << ", " << SdntArr[i].Grade2 << ", " << SdntArr[i].Grade3
+         << " | Avg: " << GetAverage(i) << endl;
 }
 
 void SaveToFile() {
-    string filename = "/Users/zrossiz/Desktop/hse/toi_sr/students.csv";
+    string filename = "ENTER PATH";
     int mode;
-    cout << "Viberyte rezhim: 1 - Noviy fail, 2 - Dobavit v konec > ";
+    cout << "Save mode (1 - overwrite, 2 - append): ";
     cin >> mode;
 
     ofstream f;
-    if (mode == 2) {
-        f.open(filename, ios::app);
-    } else {
-        f.open(filename);
-    }
+    if (mode == 2) f.open(filename, ios::app);
+    else f.open(filename);
 
     if (f.is_open()) {
         for (int i = 0; i < SdntCount; i++) {
-            if (DeletedMask[i] == false) {
+            if (!DeletedMask[i]) {
                 f << SdntArr[i].StudentNumber << ";"
                   << SdntArr[i].LastName << ";"
                   << SdntArr[i].FirstName << ";"
@@ -76,56 +70,43 @@ void SaveToFile() {
             }
         }
         f.close();
-        cout << "Dannye sohraneny v fail " << filename << endl;
+        cout << "Saved to file" << endl;
     } else {
-        cout << "Oshibka otkritiya faila!" << endl;
+        cout << "File open error" << endl;
     }
 }
 
 void LoadFromFile() {
-    string filename = "students.csv";
+    string filename = "ENTER PATH";
     ifstream f(filename);
 
     if (f.is_open()) {
-        cout << "Chtenie iz faila..." << endl;
+        cout << "Reading from file..." << endl;
 
         while (!f.eof() && SdntCount < MAX_STUDENTS) {
-
-            string tempStr;
-
-            if (f.peek() == EOF) break;
-
             string val;
 
-            getline(f, val, ';'); 
+            if (f.peek() == EOF) break;
+            getline(f, val, ';');
             if (val == "") break;
             SdntArr[SdntCount].StudentNumber = stoi(val);
 
             getline(f, SdntArr[SdntCount].LastName, ';');
-
             getline(f, SdntArr[SdntCount].FirstName, ';');
-
             getline(f, SdntArr[SdntCount].MiddleName, ';');
 
-            getline(f, val, ';');
-            SdntArr[SdntCount].BirthYear = stoi(val);
-
-            getline(f, val, ';');
-            SdntArr[SdntCount].Grade1 = stoi(val);
-
-            getline(f, val, ';');
-            SdntArr[SdntCount].Grade2 = stoi(val);
-
-            getline(f, val); 
-            SdntArr[SdntCount].Grade3 = stoi(val);
+            getline(f, val, ';'); SdntArr[SdntCount].BirthYear = stoi(val);
+            getline(f, val, ';'); SdntArr[SdntCount].Grade1 = stoi(val);
+            getline(f, val, ';'); SdntArr[SdntCount].Grade2 = stoi(val);
+            getline(f, val);      SdntArr[SdntCount].Grade3 = stoi(val);
 
             DeletedMask[SdntCount] = false;
             SdntCount++;
         }
         f.close();
-        cout << "Zagruzheno studentov: " << SdntCount << endl;
+        cout << "Loaded students: " << SdntCount << endl;
     } else {
-        cout << "Fail ne naiden!" << endl;
+        cout << "File not found" << endl;
     }
 }
 
@@ -143,16 +124,15 @@ void BuildIndexByLastName() {
     }
 }
 
-// Построение индекса по Среднему баллу (Пункт 6 - Сортировка Пузырьком)
 void BuildIndexByAverage() {
     for (int i = 0; i < SdntCount; i++) IndexByAverage[i] = i;
 
     for (int i = 0; i < SdntCount - 1; i++) {
         for (int j = 0; j < SdntCount - i - 1; j++) {
             if (GetAverage(IndexByAverage[j]) < GetAverage(IndexByAverage[j + 1])) {
-                int temp = IndexByAverage[j];
+                int tmp = IndexByAverage[j];
                 IndexByAverage[j] = IndexByAverage[j + 1];
-                IndexByAverage[j + 1] = temp;
+                IndexByAverage[j + 1] = tmp;
             }
         }
     }
@@ -161,7 +141,7 @@ void BuildIndexByAverage() {
 void PrintByIndex(int IndexArray[]) {
     for (int i = 0; i < SdntCount; i++) {
         int realIndex = IndexArray[i];
-        if (DeletedMask[realIndex] == false) {
+        if (!DeletedMask[realIndex]) {
             PrintStudent(realIndex);
         }
     }
@@ -189,10 +169,7 @@ int RecBinarySearchAvg(int L, int R, double key) {
     int realIndex = IndexByAverage[M];
     double val = GetAverage(realIndex);
 
-    double diff = val - key;
-    if (diff < 0) diff = -diff; 
-
-    if (diff < 0.001) {
+    if (fabs(val - key) < 0.001) {
         if (DeletedMask[realIndex]) return -1;
         return realIndex;
     }
@@ -201,27 +178,27 @@ int RecBinarySearchAvg(int L, int R, double key) {
 }
 
 void EditStudent(int index) {
-    cout << "Redaktirovanie zapisi:" << endl;
+    cout << "Editing record..." << endl;
     PrintStudent(index);
-    cout << "Novaya Familiya: "; cin >> SdntArr[index].LastName;
-    cout << "Novoe Imya: "; cin >> SdntArr[index].FirstName;
-    cout << "Novaya Ocenka 1: "; cin >> SdntArr[index].Grade1;
-    cout << "Novaya Ocenka 2: "; cin >> SdntArr[index].Grade2;
-    cout << "Novaya Ocenka 3: "; cin >> SdntArr[index].Grade3;
-    cout << "Obnovleno. Perestraivaem indexy." << endl;
+    cout << "New last name: "; cin >> SdntArr[index].LastName;
+    cout << "New first name: "; cin >> SdntArr[index].FirstName;
+    cout << "New grade 1: "; cin >> SdntArr[index].Grade1;
+    cout << "New grade 2: "; cin >> SdntArr[index].Grade2;
+    cout << "New grade 3: "; cin >> SdntArr[index].Grade3;
+    cout << "Updated. Rebuilding indexes..." << endl;
     BuildIndexByLastName();
     BuildIndexByAverage();
 }
 
 void MarkDeleted(int index) {
     DeletedMask[index] = true;
-    cout << "Zapis pomechena kak udalennaya." << endl;
+    cout << "Record marked as deleted" << endl;
 }
 
 void PackArray() {
     int newCount = 0;
     for (int i = 0; i < SdntCount; i++) {
-        if (DeletedMask[i] == false) {
+        if (!DeletedMask[i]) {
             SdntArr[newCount] = SdntArr[i];
             DeletedMask[newCount] = false;
             newCount++;
@@ -231,7 +208,7 @@ void PackArray() {
     SdntCount = newCount;
     for (int i = SdntCount; i < MAX_STUDENTS; i++) DeletedMask[i] = false;
 
-    cout << "Fizicheski udaleno " << removed << " zapisey." << endl;
+    cout << "Physically removed: " << removed << endl;
     BuildIndexByLastName();
     BuildIndexByAverage();
 }
@@ -241,54 +218,56 @@ int main() {
 
     for (int i = 0; i < MAX_STUDENTS; i++) DeletedMask[i] = false;
 
-    cout << "=== 1. Vvod dannyh (Pukt 1) ===" << endl;
+    cout << "=== Input ===" << endl;
     int n;
-    cout << "Skolko studentov vvesti? "; cin >> n;
+    cout << "How many students to enter: "; cin >> n;
     for (int k = 0; k < n; k++) {
         cout << "Student " << SdntCount + 1 << ":" << endl;
         InputStudent(SdntCount);
         SdntCount++;
     }
 
-    cout << "\n=== 2. Rabota s failami (Pukty 3, 4) ===" << endl;
+    cout << "\n=== File saving ===" << endl;
     SaveToFile();
 
-    cout << "\n=== 3. Postroenie i vyvod indexov (Pukty 5, 6, 7) ===" << endl;
+    cout << "\n=== Build and print indexes ===" << endl;
     BuildIndexByLastName();
     BuildIndexByAverage();
 
-    cout << "--- Po Familii (A-Z) ---" << endl;
+    cout << "--- Sorted by last name (A to Z) ---" << endl;
     PrintByIndex(IndexByLastName);
 
-    cout << "--- Po Sr. Ballu (High-Low) ---" << endl;
+    cout << "--- Sorted by average score (High to Low) ---" << endl;
     PrintByIndex(IndexByAverage);
 
-    cout << "\n=== 4. Poisk (Punkt 8) ===" << endl;
+    cout << "\n=== Search ===" << endl;
     string keyName;
-    cout << "Vvedite Familiyu dlya poiska: "; cin >> keyName;
+    cout << "Surname for search: ";
+    cin >> keyName;
     int resName = IterBinarySearchLastName(keyName);
     if (resName != -1) PrintStudent(resName);
-    else cout << "Ne naideno." << endl;
+    else cout << "Not found" << endl;
 
     double keyAvg;
-    cout << "Vvedite Sr. Ball dlya poiska: "; cin >> keyAvg;
+    cout << "Average score for search: ";
+    cin >> keyAvg;
     int resAvg = RecBinarySearchAvg(0, SdntCount - 1, keyAvg);
     if (resAvg != -1) PrintStudent(resAvg);
-    else cout << "Ne naideno." << endl;
+    else cout << "Not found" << endl;
 
-    cout << "\n=== 5. Redaktirovanie (Punkt 9) ===" << endl;
+    cout << "\n=== Edit student ===" << endl;
     if (SdntCount > 0) EditStudent(0);
 
-    cout << "\n=== 6. Udalenie (Punkt 10) ===" << endl;
+    cout << "\n=== Deletion ===" << endl;
     if (SdntCount > 0) {
-        cout << "Udalyaem pervogo studenta..." << endl;
+        cout << "Deleting first student..." << endl;
         MarkDeleted(0);
         PackArray();
     }
 
-    cout << "\n--- Itogoviy spisok ---" << endl;
+    cout << "\n=== Final list ===" << endl;
     PrintByIndex(IndexByLastName);
 
-    cout << "\nRabota zavershena." << endl;
+    cout << "\nProgram completed" << endl;
     return 0;
 }
