@@ -42,7 +42,7 @@
 ```mermaid
 flowchart TD
     Start([Начало]) --> Input[/Вход: искомая Фамилия key/]
-    Input --> Init["L = 0\nR = SdntCount - 1"]
+    Input --> Init["L = 0,R = SdntCount - 1"]
     Init --> CheckLoop{"L <= R?"}
 
     CheckLoop -- Нет --> NotFound([Возврат -1])
