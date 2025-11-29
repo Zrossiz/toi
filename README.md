@@ -41,23 +41,23 @@
 
 ```mermaid
 flowchart TD
-    Start([Начало]) --> Input[/Вход: искомая Фамилия (key)/]
-    Input --> Init[L = 0\nR = SdntCount - 1]
-    Init --> CheckLoop{L <= R?}
+    Start([Начало]) --> Input[/Вход: искомая Фамилия key/]
+    Input --> Init["L = 0\nR = SdntCount - 1"]
+    Init --> CheckLoop{"L <= R?"}
 
     CheckLoop -- Нет --> NotFound([Возврат -1])
-    CheckLoop -- Да --> CalcM[M = (L + R) / 2]
+    CheckLoop -- Да --> CalcM["M = (L + R) / 2"]
 
-    CalcM --> GetReal[realIndex = IndexByLastName[M]]
+    CalcM --> GetReal["realIndex = IndexByLastName[M]"]
     GetReal --> CheckMatch{"SdntArr[realIndex] == key?"}
 
     CheckMatch -- Да --> CheckDel{"DeletedMask[realIndex]?"}
-    CheckDel -- Да (удален) --> NotFound
+    CheckDel -- Да удален --> NotFound
     CheckDel -- Нет --> Found([Возврат realIndex])
 
     CheckMatch -- Нет --> CheckLess{"SdntArr[realIndex] < key?"}
-    CheckLess -- Да (искать справа) --> MoveL[L = M + 1]
-    CheckLess -- Нет (искать слева) --> MoveR[R = M - 1]
+    CheckLess -- Да искать справа --> MoveL["L = M + 1"]
+    CheckLess -- Нет искать слева --> MoveR["R = M - 1"]
 
     MoveL --> CheckLoop
     MoveR --> CheckLoop
@@ -69,22 +69,22 @@ flowchart TD
 ```mermaid
 flowchart TD
     Start([Начало: RecBinarySearchAvg]) --> Args[/Вход: L, R, key/]
-    Args --> CheckBase{L > R?}
+    Args --> CheckBase{"L > R?"}
 
     CheckBase -- Да --> RetNotFound([Возврат -1])
-    CheckBase -- Нет --> CalcMid[M = (L + R) / 2]
+    CheckBase -- Нет --> CalcMid["M = (L + R) / 2"]
 
-    CalcMid --> GetVal[realIndex = IndexByAverage[M]\nval = GetAverage(realIndex)]
+    CalcMid --> GetVal["realIndex = IndexByAverage[M]\nval = GetAverage(realIndex)"]
     GetVal --> CheckEq{"|val - key| < 0.001?"}
 
-    CheckEq -- Да (равны) --> CheckDel2{"DeletedMask[realIndex]?"}
+    CheckEq -- Да равны --> CheckDel2{"DeletedMask[realIndex]?"}
     CheckDel2 -- Да --> RetNotFound
     CheckDel2 -- Нет --> RetFound([Возврат realIndex])
 
     CheckEq -- Нет --> CheckGreater{"val > key?"}
 
-    CheckGreater -- Да (искать справа) --> CallRight[/"Вызов RecBinarySearchAvg\n(M + 1, R, key)"/]
-    CheckGreater -- Нет (искать слева) --> CallLeft[/"Вызов RecBinarySearchAvg\n(L, M - 1, key)"/]
+    CheckGreater -- Да искать справа --> CallRight[/"Вызов RecBinarySearchAvg\n(M + 1, R, key)"/]
+    CheckGreater -- Нет искать слева --> CallLeft[/"Вызов RecBinarySearchAvg\n(L, M - 1, key)"/]
 
     CallRight --> ReturnRes([Возврат результата])
     CallLeft --> ReturnRes
