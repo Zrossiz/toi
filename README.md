@@ -8,7 +8,7 @@
 
 ```mermaid
 flowchart TD
-    Start([Начало]) --> InitArr["IndexByLastName[i] = i<br/>(для всех k от 0 до SdntCount-1)"]
+    Start([Начало]) --> InitArr["IndexByLastName[i] = i<br/>(для всех i от 0 до SdntCount-1)"]
     InitArr --> InitI["i = 1"]
     InitI --> CondI{"i < SdntCount?"}
 
