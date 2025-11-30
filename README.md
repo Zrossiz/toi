@@ -32,60 +32,106 @@
 
 ---
 
-## 🧩 Блок-схемы алгоритмов поиска
+## 🧩 Блок-схемы алгоритмов
 
-Ниже представлены алгоритмы, используемые для поиска записей в индексированных массивах.
-
-### 1. Итерационный бинарный поиск (по Фамилии)
-Поиск выполняется в цикле `while` по отсортированному (A-Z) индексу фамилий.
+### 1. Сортировка по фамилии (Insertion Sort)
 
 ```mermaid
 flowchart TD
-    Start([Начало]) --> Input[/Вход: искомая Фамилия key/]
-    Input --> Init["L = 0,R = SdntCount - 1"]
-    Init --> CheckLoop{"L <= R?"}
+    Start([Начало]) --> InitArr["IndexByLastName[k] = k<br/>(для всех k от 0 до SdntCount-1)"]
+    InitArr --> InitI["i = 1"]
+    InitI --> CondI{"i < SdntCount?"}
 
-    CheckLoop -- Нет --> NotFound([Возврат -1])
-    CheckLoop -- Да --> CalcM["M = (L + R) / 2"]
+    CondI -- Нет --> End([Конец])
+    CondI -- Да --> SetX["x = IndexByLastName[i]"]
+    SetX --> SetJ["j = i - 1"]
 
-    CalcM --> GetReal["realIndex = IndexByLastName[M]"]
-    GetReal --> CheckMatch{"SdntArr[realIndex] == key?"}
+    SetJ --> CondWhile{"j >= 0 и<br/>SdntArr[x].LastName < SdntArr[Index[j]].LastName?"}
 
-    CheckMatch -- Да --> CheckDel{"DeletedMask[realIndex]?"}
-    CheckDel -- Да удален --> NotFound
-    CheckDel -- Нет --> Found([Возврат realIndex])
+    CondWhile -- Да --> MoveElem["IndexByLastName[j+1] = IndexByLastName[j]"]
+    MoveElem --> DecJ["j = j - 1"]
+    DecJ --> CondWhile
 
-    CheckMatch -- Нет --> CheckLess{"SdntArr[realIndex] < key?"}
-    CheckLess -- Да искать справа --> MoveL["L = M + 1"]
-    CheckLess -- Нет искать слева --> MoveR["R = M - 1"]
-
-    MoveL --> CheckLoop
-    MoveR --> CheckLoop
+    CondWhile -- Нет --> InsertX["IndexByLastName[j+1] = x"]
+    InsertX --> IncI["i = i + 1"]
+    IncI --> CondI
 ```
 
-### 2. Рекурсивный бинарный поиск (по Среднему баллу)
-Поиск выполняется рекурсивно. Индекс отсортирован по убыванию (High to Low). Сравнение вещественных чисел происходит с точностью `0.001`.
+### 2. Сортировка по среднему баллу (Bubble Sort)
 
 ```mermaid
 flowchart TD
-    Start([Начало: RecBinarySearchAvg]) --> Args[/Вход: L, R, key/]
-    Args --> CheckBase{"L > R?"}
+    Start([Начало]) --> InitArr["IndexByAverage[k] = k<br/>(для всех k от 0 до SdntCount-1)"]
+    InitArr --> InitI["i = 0"]
+    InitI --> CondI{"i < SdntCount - 1?"}
 
+    CondI -- Нет --> End([Конец])
+    CondI -- Да --> InitJ["j = 0"]
+
+    InitJ --> CondJ{"j < SdntCount - i - 1?"}
+    CondJ -- Нет --> IncI["i = i + 1"]
+    IncI --> CondI
+
+    CondJ -- Да --> CheckSwap{"Avg(Index[j]) < Avg(Index[j+1])?"}
+
+    CheckSwap -- Да --> Swap["tmp = Index[j]<br/>Index[j] = Index[j+1]<br/>Index[j+1] = tmp"]
+    Swap --> IncJ["j = j + 1"]
+
+    CheckSwap -- Нет --> IncJ
+    IncJ --> CondJ
+
+```
+
+### 3. Итеративный бинарный поиск по фамилии
+
+```mermaid
+flowchart TD
+    Start([Начало]) --> Input[/Вход: key/]
+    Input --> InitBounds["L = 0<br/>R = SdntCount - 1"]
+
+    InitBounds --> CondLoop{"L <= R?"}
+    CondLoop -- Нет --> RetNotFound([Возврат -1])
+
+    CondLoop -- Да --> CalcM["M = (L + R) / 2"]
+    CalcM --> GetIdx["realIndex = IndexByLastName[M]"]
+
+    GetIdx --> CheckEq{"SdntArr[realIndex].LastName == key?"}
+
+    CheckEq -- Да --> CheckDel{"DeletedMask[realIndex]?"}
+    CheckDel -- Да --> RetNotFound
+    CheckDel -- Нет --> RetFound([Возврат realIndex])
+
+    CheckEq -- Нет --> CheckLess{"SdntArr[realIndex].LastName < key?"}
+    CheckLess -- Да --> SetL["L = M + 1"]
+    CheckLess -- Нет --> SetR["R = M - 1"]
+
+    SetL --> CondLoop
+    SetR --> CondLoop
+```
+
+### 4. Рекурсивный бинарный поиск по среднему баллу
+
+```mermaid
+flowchart TD
+    Start([Начало RecBinarySearchAvg]) --> Input[/Вход: L, R, key/]
+
+    Input --> CheckBase{"L > R?"}
     CheckBase -- Да --> RetNotFound([Возврат -1])
-    CheckBase -- Нет --> CalcMid["M = (L + R) / 2"]
 
-    CalcMid --> GetVal["realIndex = IndexByAverage[M]\nval = GetAverage(realIndex)"]
+    CheckBase -- Нет --> CalcM["M = (L + R) / 2"]
+    CalcM --> GetVal["realIndex = IndexByAverage[M]<br/>val = GetAverage(realIndex)"]
+
     GetVal --> CheckEq{"|val - key| < 0.001?"}
 
-    CheckEq -- Да равны --> CheckDel2{"DeletedMask[realIndex]?"}
-    CheckDel2 -- Да --> RetNotFound
-    CheckDel2 -- Нет --> RetFound([Возврат realIndex])
+    CheckEq -- Да --> CheckDel{"DeletedMask[realIndex]?"}
+    CheckDel -- Да --> RetNotFound
+    CheckDel -- Нет --> RetFound([Возврат realIndex])
 
     CheckEq -- Нет --> CheckGreater{"val > key?"}
 
-    CheckGreater -- Да искать справа --> CallRight[/"Вызов RecBinarySearchAvg\n(M + 1, R, key)"/]
-    CheckGreater -- Нет искать слева --> CallLeft[/"Вызов RecBinarySearchAvg\n(L, M - 1, key)"/]
+    CheckGreater -- Да --> CallRight[["Вызов RecBinarySearchAvg(M+1, R, key)"]]
+    CheckGreater -- Нет --> CallLeft[["Вызов RecBinarySearchAvg(L, M-1, key)"]]
 
-    CallRight --> ReturnRes([Возврат результата])
-    CallLeft --> ReturnRes
+    CallRight --> End([Возврат результата])
+    CallLeft --> End
 ```
