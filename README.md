@@ -44,7 +44,7 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    Start([Начало]) --> InitArr["IndexByAverage[i] = k<br/>(для всех i от 0 до SdntCount-1)"]
+    Start([Начало]) --> InitArr["IndexByAverage[i] = i<br/>(для всех i от 0 до SdntCount-1)"]
     InitArr --> InitI["i = 0"]
     InitI --> CondI{"i < SdntCount - 1?"}
 
