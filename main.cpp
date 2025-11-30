@@ -47,7 +47,7 @@ void PrintStudent(int i) {
 }
 
 void SaveToFile() {
-    string filename = "ENTER PATH";
+    string filename = "ENTER FILE PATH";
     int mode;
     cout << "Save mode (1 - overwrite, 2 - append): ";
     cin >> mode;
@@ -77,7 +77,7 @@ void SaveToFile() {
 }
 
 void LoadFromFile() {
-    string filename = "ENTER PATH";
+    string filename = "ENTER FILE PATH";
     ifstream f(filename);
 
     if (f.is_open()) {
@@ -138,11 +138,16 @@ void BuildIndexByAverage() {
     }
 }
 
-void PrintByIndex(int IndexArray[]) {
-    for (int i = 0; i < SdntCount; i++) {
-        int realIndex = IndexArray[i];
-        if (!DeletedMask[realIndex]) {
-            PrintStudent(realIndex);
+void PrintByIndex(int IndexArray[], bool reverse = false) {
+    if (!reverse) {
+        for (int i = 0; i < SdntCount; i++) {
+            int realIndex = IndexArray[i];
+            if (!DeletedMask[realIndex]) PrintStudent(realIndex);
+        }
+    } else {
+        for (int i = SdntCount - 1; i >= 0; i--) {
+            int realIndex = IndexArray[i];
+            if (!DeletedMask[realIndex]) PrintStudent(realIndex);
         }
     }
 }
@@ -173,8 +178,11 @@ int RecBinarySearchAvg(int L, int R, double key) {
         if (DeletedMask[realIndex]) return -1;
         return realIndex;
     }
-    if (val > key) return RecBinarySearchAvg(M + 1, R, key);
-    else return RecBinarySearchAvg(L, M - 1, key);
+    if (val > key) {
+        return RecBinarySearchAvg(M + 1, R, key);
+    } else {
+        return RecBinarySearchAvg(L, M - 1, key);
+    }
 }
 
 void EditStudent(int index) {
@@ -199,18 +207,26 @@ void PackArray() {
     int newCount = 0;
     for (int i = 0; i < SdntCount; i++) {
         if (!DeletedMask[i]) {
-            SdntArr[newCount] = SdntArr[i];
+            SdntArr[newCount].StudentNumber = SdntArr[i].StudentNumber;
+            SdntArr[newCount].LastName = SdntArr[i].LastName;
+            SdntArr[newCount].FirstName = SdntArr[i].FirstName;
+            SdntArr[newCount].MiddleName = SdntArr[i].MiddleName;
+            SdntArr[newCount].BirthYear = SdntArr[i].BirthYear;
+            SdntArr[newCount].Grade1 = SdntArr[i].Grade1;
+            SdntArr[newCount].Grade2 = SdntArr[i].Grade2;
+            SdntArr[newCount].Grade3 = SdntArr[i].Grade3;
+
             DeletedMask[newCount] = false;
             newCount++;
         }
     }
     int removed = SdntCount - newCount;
     SdntCount = newCount;
-    for (int i = SdntCount; i < MAX_STUDENTS; i++) DeletedMask[i] = false;
 
-    cout << "Physically removed: " << removed << endl;
     BuildIndexByLastName();
     BuildIndexByAverage();
+
+    cout << "Physically removed: " << removed << endl;
 }
 
 int main() {
